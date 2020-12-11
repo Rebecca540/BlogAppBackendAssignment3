@@ -1,35 +1,39 @@
-const mongoose = require("mongoose");
-const bcrypt = require("bcrypt");
+const mongoose = require('mongoose')
+
+const bcrypt = require('bcrypt')
 
 const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    minlength: [5, "minimum username length is 5"],
-    //   maxlength: [16, 'maximum username length is 16'],
-    unique: true,
-    required: [true, "please enter a username"],
-    lowercase: true
-  },
-  email: {
-    type: String,
-    unique: true,
-    required: [true, "the email field is required"],
-    lowercase: true
-  },
-  password: {
-    type: String,
-    minlength: 8,
-    required: [true, "you must enter a password"]
-  }
+    fullname : {
+        type : String,
+        minlength : [6, 'fullname must have a minimum lengnth of 6'],
+        maxlength : [20, 'fullname must have a maximum length of 20'],
+        unique : true ,
+        required : [true,'Please fullname is required'],
+        lowercase : true 
+    },
+
+    email : {
+        type : String,
+        unique : true ,
+        required : [true,'Please email is required'],
+        lowercase : true 
+    },
+
+
+    password : {
+        type : String,
+        unique : true ,
+        required : [true,'Please password is required'], 
+    }
 });
 
-const User = mongoose.model("user", userSchema);
+const User = mongoose.model('user',userSchema)
 
-userSchema.pre("save", async function (next) {
-  const salt = bcrypt.genSalt();
-  this.password = await bcrypt.hash(this.password, salt);
-  console.log(this.password);
-  next();
-});
+userSchema.pre('save',async function(next){
+    const salt = bcrypt.genSalt()
+    this.password = await bcrypt.hash(this.password,salt)
 
-module.exports = User;
+    next()
+})
+
+module.exports = User

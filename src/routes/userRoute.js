@@ -1,23 +1,21 @@
-const { Router } = require("express");
-const router = Router();
+const {Router} = require('express')
 
-const {
-  createUser,
-  getUserDetails,
-  updateUserDetails,
-  deleteUser
-} = require("../controllers/userController");
+const userRouter = Router()
 
-// route for creating an account
-router.post("/api/user/new", createUser);
+const {createUser,loginUser,updateUser} = require('../controllers/userController')
 
-//route for getting an account details
-router.get("/api/user/username", getUserDetails);
+//Route for signup
+userRouter.post('/blog-api/user/signup',createUser);
 
-//route for updating an account details
-router.put("/api/user/update", updateUserDetails);
+//Route for login
+userRouter.post('blog-api/user/login',loginUser);
 
-// route for deleting an account
-router.delete("/api/user/delete", deleteUser);
+//Route for updating user details
+userRouter.put('blog-api/user/update',updateUser);
 
-module.exports = router;
+
+
+module.exports = userRouter
+
+
+

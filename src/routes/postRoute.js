@@ -1,11 +1,27 @@
-const router = require('express').Router()
+const {Router} = require('express')
 
-const { addPost, getPosts } = require('../controllers/postController')
+const blogRouter = Router()
 
-//creating post 
-router.post('/api/newpost', addPost)
+const {createPost,getPost,getPostByAuthor,getPostByParam,updatePost,deletePost} = require('../controllers/postController')
 
-//retrieving posts
-router.get('/api/post', getPosts)
+//route for creating post
+blogRouter.post('/blog-api/blog/newPost',createPost);
 
-module.exports = router
+//route for getting all  posts or blogs 
+blogRouter.get('/blog-api/blog/newPost',getPost);
+
+//route for getting post by author
+blogRouter.get('/blog-api/blog/newPost',getPostByAuthor);
+
+//route for getting post by param
+blogRouter.get('/blog-api/blog/:postId',getPostByParam);
+
+//route for updating post
+blogRouter.patch('/blog-api/blog/newPost',updatePost);
+
+//route for deleting post
+blogRouter.delete('/blog-api/blog/newPost',deletePost)
+
+
+module.exports = blogRouter
+

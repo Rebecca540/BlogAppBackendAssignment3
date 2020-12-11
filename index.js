@@ -33,5 +33,5 @@ app.use(postRoute)
 
 
 app.get('/', (req, res) => {
-  res.status(200).send('<h1> Hei you, you dey town </h1>')
+  res.status(200).send('<h1></h1>')
 })

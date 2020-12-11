@@ -1,95 +1,79 @@
-const User = require("../models/userModel");
+const User = require('../models/userModel')
 
-function handleError(error) {
-  let err = { username: "", email: "", password: "" };
+const handleError= (error) => {
+    let err = {username : '', email : '', password : ''}
 
-  if (error.message === "incorrect username") {
-    err.username = "that username does not exist";
-  }
+    if(error.message === 'incorrect username'){
+        err.username = 'that username does not exit'
+    }
 
-  if (error.message === "incorrect email") {
-    err.email = "that email is not valid";
-  }
+    if (error.message === 'incorrect email'){
+        err.email = 'that email is not valid'
+    }
 
-  if (error.message === "incorrect password") {
-    err.password = "the password is incorrect";
-  }
+    if (error.message === 'incorrect password'){
+        err.password = 'the password is incorrect'
+    }
 
-  if (error.code === 11000) {
-    err.email = "that email is registered already";
+    if (error.code === '11000'){
+        err.email   = 'that email is registered already'
+    }
+    
+    if (error.message.includes('user validation failed')){
+        Object.values(error.errors).forEach(({properties}) => {
+            err[properties.path] = properties.message
+        })
+    }
 
-    return err;
-  }
 
-  if (error.message.includes("user validation failed")) {
-    // console.log(error.errors.properties)
-    Object.values(error.errors).forEach(({ properties }) => {
-      err[properties.path] = properties.message;
-    });
-  }
-
-  return err;
+    return err
 }
 
-const userCtrl = {};
 
-// create a user = POST method
-userCtrl.createUser = async (req, res) => {
-  try {
-    const newUser = new User(req.body);
-    let result = await newUser.save();
-    res.status(200).send({ message: "Your account has been created", result });
-  } catch (error) {
-    // console.log(error.message)
-    const warnings = handleError(error);
-    res.status(400).json({ warnings });
-  }
-};
 
-// read a user detail = GET method
-userCtrl.getUserDetails = async (req, res) => {
-  try {
-    let person = await User.find({ username: req.body.username });
-    if (!person) {
-      res
-        .status(400)
-        .send({ message: "user does not exits, check planet mars" });
-    } else {
-      res
-        .status(200)
-        .send({ message: "welcome to earth, the user exists", person });
+const userCtrl = {}
+
+//creating user(signup) using post method
+userCtrl.createUser = async(req,res)=>{
+    try{
+        let user = new user(res.body)
+        let result = await user.save()
+        res.status(201).send({message: 'user is successfully created',result})
     }
-  } catch (error) {
-    const warnings = handleError(error);
-    res.status(400).json({ warnings });
-  }
-};
+    catch(error){
+        const warnings = handleError(error)
+        res.status(400).json({warnings})
+    }
+}
 
-// update a user detail = UPDATE/PUT method
-userCtrl.updateUserDetails = async (req, res) => {
-  const { username, email, password } = req.body;
+//logining user in
+userCtrl.loginUser = async(req,res)=>{
+    const {email,password} = req.body
+    try{
+        
+        let  user = await user.findAll({email,password})
+        res.status(201).send({message: 'user is successfully created',result})
+    }
+    catch(error){
+        const warnings = handleError(error)
+        res.status(400).json({warnings})
+    }
+}
 
-  try {
-    let person = await User.findOneAndUpdate(
-      { _id: req.params.id },
-      { username, email, password }
-    );
-    res.status(200).send({ message: "you have been reborn on earth", person });
-  } catch (error) {
-    const warnings = handleError(error);
-    res.status(400).json({ warnings });
-  }
-};
+// updating user details using the update method
 
-// delete a user account = DELETE method
-userCtrl.deleteUser = async (req, res) => {
-  try {
-    await User.findOneAndDelete({ _id: req.params.id });
-    res.status(200).send({ message: "user deported to mars" });
-  } catch (error) {
-    const warnings = handleError(error);
-    res.status(400).json({ warnings });
-  }
-};
+userCtrl.updateUser = async (req,res) =>{
 
-module.exports = userCtrl;
+    const {fullname,email,password} = req.body
+
+    try{
+       let user = await User.findOneAndupdate({_id: req.params.id},{fullname,email,password})
+        res.status(200).send({message: 'updated successfully',user})
+    }
+    catch(error){
+        const warnings = handleError(error)
+        res.status(400).json({warnings})
+    }
+}
+
+module.exports = userCtrl
